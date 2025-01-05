@@ -1,0 +1,88 @@
+ods html;
+libname L1 "C:\Users\parek\OneDrive\Desktop\SAS project";
+filename F1 "C:\Users\parek\OneDrive\Desktop\KRISHNA USA\ASSIGNMENT SAS\Project2_Data-1.txt";
+ods html close;
+ods html;
+data L1.file1;
+infile F1 dlm= '09'x dsd missover;
+input patient_ID age state$ length_stay total_charge;
+if total_charge = . then delete;
+if length_stay = . then delete;
+if age = . then delete;
+run;
+ods html close;
+ods html;
+proc print data = L1.file1;
+run;
+ods html close;
+ods html;
+libname L1 "C:\Users\parek\OneDrive\Desktop\SAS project";
+filename F2 "C:\Users\parek\OneDrive\Desktop\KRISHNA USA\ASSIGNMENT SAS\Project2_Data-2.txt";
+ods html close;
+ods html;
+data L1.file2;
+infile F2 dlm= '09'x dsd missover;
+input patient_ID group$ testscore;
+if group = "n/a" then delete;
+if group = " " then delete;
+if group = "Placebo" then delete;
+if testscore = . then delete;
+run;
+ods html close;
+ods html;
+proc print data = L1.file2;
+run;
+ods html close;
+ods html;
+data L1.final;
+merge L1.file1 (in=a) L1.file2 (in=b);
+if a =1 and b= 1;
+by patient_ID;
+run;
+ods html close;
+ods html;
+proc print data = L1.final;
+run; 
+ods html close;
+ods html;
+proc surveyselect data =L1.final
+method = srs
+sampsize = 1000
+out= L1.final1;
+run;
+ods html close;
+ods html;
+proc print data = L1.final1;
+run;
+ods html close;
+ods html;
+proc means data = L1.final1;
+run;
+ods html close;
+ods html;
+proc univariate data= L1.final;
+var age;
+histogram;
+run;
+ods html close;
+ods html;
+proc ttest data = L1.final1;
+class group;
+var testscore;
+run;
+ods html close;
+ods html;
+proc corr data = L1.final1;
+var length_stay total_charge;
+run;
+ods html close;
+ods html;
+proc means data = L1.final1;
+class state;
+var age;
+run;
+ods html close;
+
+
+
+
